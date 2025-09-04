@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,13 +21,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-n0_2a-pfn9bd$446qv6awbhp4il=xb)v%3v&v&%+%!@v3gf9f('
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True #Trocar para falso em prod
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["www.soilanalysis.com.br", "soilanalysis.com.br", "localhost", "127.0.0.1", "web"]
 
 # Application definition
 
@@ -74,8 +73,13 @@ WSGI_APPLICATION = 'soilanalysis.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+         "DB_NAME": os.environ.get("DB_NAME"),
+         "DB_USER": os.environ.get("DB_USER"),
+         "DB_PASSWORD": os.environ.get("DB_PASSWORD"),
+         "DB_HOST": "127.0.0.1",
+         "port": 5432,
+
     }
 }
 
@@ -102,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'
 
 TIME_ZONE = 'UTC'
 
