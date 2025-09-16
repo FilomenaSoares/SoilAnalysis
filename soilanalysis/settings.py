@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = "test"
 
 DEBUG = True #Trocar para falso em prod
 
@@ -36,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'abcde',
 ]
 
 MIDDLEWARE = [
@@ -74,10 +76,12 @@ WSGI_APPLICATION = 'soilanalysis.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-         "DB_NAME": os.environ.get("DB_NAME"),
-         "DB_USER": os.environ.get("DB_USER"),
-         "DB_PASSWORD": os.environ.get("DB_PASSWORD"),
-         "DB_HOST": "127.0.0.1",
+         "POSTGRES_NAME": os.environ.get("DATABASE_NAME"),
+         "POSTGRES_USER": os.environ.get("DATABASE_USERNAME"),
+         "POSTGRES_PASSWORD": os.environ.get("DATABASE_PASSWORD"),
+         "POSTGRES_HOST": os.environ.get("DATABASE_HOST"),
+         ##"POSTGRES_PORT": os.environ.get("DATABASE_PORT"),
+         "POSTGRES_HOST": "127.0.0.1",
          "port": 5432,
 
     }
