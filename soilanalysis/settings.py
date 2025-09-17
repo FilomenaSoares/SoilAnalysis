@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+from logging import config
 from pathlib import Path
 import os
 
@@ -37,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'abcde',
+    
 ]
 
 MIDDLEWARE = [
@@ -76,13 +77,23 @@ WSGI_APPLICATION = 'soilanalysis.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get("DATABASE_NAME"),
-        'USER': os.environ.get("DATABASE_USERNAME"),
-        'PASSWORD': os.environ.get("DATABASE_PASSWORD"),
-        'HOST': os.environ.get("DATABASE_HOST"),  # normalmente 'db' no Docker
-        'PORT': int(os.environ.get("DATABASE_PORT", 5432)),
+        'NAME': os.environ.get('DATABASE_NAME', 'postgres-docker'),
+        'USER': os.environ.get('DATABASE_USERNAME', 'postgres'),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'postgres'),
+        'HOST': os.environ.get('DATABASE_HOST', 'localhost'), 
+        'PORT': int(os.environ.get('DATABASE_PORT', 5431)),
     }
 }
+
+#email config
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')  # localhost 0.0.0.0
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 1025))
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_USE_TLS = bool(os.environ.get('EMAIL_USE_TLS', False))
 
 
 # Password validation

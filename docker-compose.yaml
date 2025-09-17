@@ -1,37 +1,53 @@
 services:
  db:
+   container_name: postgres-docker
    image: postgres:17
+   restart: always
+   user: postgres
+   volumes:
+     - postgres_data:/var/lib/postgresql/data
    environment:
      POSTGRES_USER: ${DATABASE_USERNAME}
      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
      POSTGRES_DB: ${DATABASE_NAME}
    ports:
-     - "5432:5432"
-   volumes:
-     - postgres_data:/var/lib/postgresql/data
+     - "5431:5432"
+   networks:
+     - postgres-docker-network
    env_file:
      - .env
- 
- django-web:
-   build: .
-   container_name: django-docker
-   ports:
-     - "8000:8000"
-   depends_on:
-     - db
-   environment:
-     DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
-     DEBUG: ${DEBUG}
-     DJANGO_LOGLEVEL: ${DJANGO_LOGLEVEL}
-     DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
-     DATABASE_ENGINE: ${DATABASE_ENGINE}
-     DATABASE_NAME: ${DATABASE_NAME}
-     DATABASE_USERNAME: ${DATABASE_USERNAME}
- 
-     DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-     DATABASE_HOST: db     
-     DATABASE_PORT: 5432
-   env_file:
-     - .env
+
+
+ pgadmin:
+    container_name: postgres-docker-pgadmin
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    volumes:
+       - pgadmin:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - 5050:80
+    networks:
+      - postgres-docker-network
+
+ mailhog:
+    container_name: postgres-docker-mailhog
+    image: mailhog/mailhog
+    restart: always
+    logging:
+      driver: 'none'
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+      - postgres-docker-network
+
 volumes:
-   postgres_data:
+  postgres_data:  # mesmo nome do volume externo definido na linha 10
+  pgadmin:
+
+networks:
+  postgres-docker-network:
