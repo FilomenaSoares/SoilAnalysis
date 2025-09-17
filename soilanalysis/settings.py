@@ -76,14 +76,11 @@ WSGI_APPLICATION = 'soilanalysis.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-         "POSTGRES_NAME": os.environ.get("DATABASE_NAME"),
-         "POSTGRES_USER": os.environ.get("DATABASE_USERNAME"),
-         "POSTGRES_PASSWORD": os.environ.get("DATABASE_PASSWORD"),
-         "POSTGRES_HOST": os.environ.get("DATABASE_HOST"),
-         ##"POSTGRES_PORT": os.environ.get("DATABASE_PORT"),
-         "POSTGRES_HOST": "127.0.0.1",
-         "port": 5432,
-
+        'NAME': os.environ.get("DATABASE_NAME"),
+        'USER': os.environ.get("DATABASE_USERNAME"),
+        'PASSWORD': os.environ.get("DATABASE_PASSWORD"),
+        'HOST': os.environ.get("DATABASE_HOST"),  # normalmente 'db' no Docker
+        'PORT': int(os.environ.get("DATABASE_PORT", 5432)),
     }
 }
 
