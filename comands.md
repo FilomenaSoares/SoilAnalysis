@@ -1,33 +1,20 @@
 
-    docker build -t soilanalysis . [Constroi o container/imagens]
-    docker run -p 8000:8000 soilanalysis [verificar se ficou obsoleto conforme fui implementando o docker-compose + implementei o postgreSQL]
-    docker compose up --build [roda o container criado]
-    docker image list [Para visualizar a lista de imagens ativas no docker]
+docker image list [Para visualizar a lista de imagens ativas no docker]
 
-
-
-
-     Subir o projeto com Docker Compose
-     docker compose up --build
-     Reconstrói todas as imagens se necessário.
-Sobe os containers (Django + PostgreSQL) e conecta-os na rede interna definida pelo Compose.
-Saída dos logs aparecerá no terminal.
+Subir o projeto com Docker Compose
+docker-compose up -d
+Reconstrói todas as imagens se necessário.
 
 
 Verificar containers ativos
 docker compose ps
 
-Acessar o container Django (opcional)
-docker compose exec django-web bash
-web é o nome do serviço Django definido no docker-compose.yml.
-Permite rodar comandos dentro do container, por exemplo:
+Acessar o container Django 
 python manage.py makemigrations
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver 0.0.0.0:8000
 
-Listar imagens Docker (opcional)
-docker image list
 
 Parar o ambiente
 docker compose down
@@ -36,3 +23,17 @@ As imagens não são removidas, apenas os containers temporários.
 
 Se fizer alterações no requirements.txt ou Dockerfile, sempre use:
 docker compose up --build
+docker-compose up -d
+
+Portainer commando
+docker run -d -p 9000:9000 -p 8000:8000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
+
+Porta do Portainer:
+http://localhost:9000/
+
+erro com psycopg2: 
+pip install psycopg-binary 
+pip freeze | Select-String psycopg2
+pip freeze | Select-String psycopg2 > requirements.txt
+
+environments ip: 127.0.0.1
