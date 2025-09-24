@@ -22,7 +22,7 @@ def on_message(client, userdata, msg):
         # Salva no banco
         DHT11Data.objects.create(
             temperatura=temperatura,
-            humidity=umidade
+            umidade=umidade
         )
         print(f"Dados salvos: Temp={temperatura}, Hum={umidade}")
     except Exception as e:
