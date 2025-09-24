@@ -5,3 +5,4 @@ psycopg-binary
 djangorestframework
 markdown      
 django-filter
+paho-mqtt

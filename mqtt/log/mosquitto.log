@@ -1,0 +1,49 @@
+1758674175: mosquitto version 2.0.22 starting
+1758674175: Config loaded from /mosquitto/config/mosquitto.conf.
+1758674175: Opening ipv4 listen socket on port 1883.
+1758674175: Opening ipv6 listen socket on port 1883.
+1758674175: mosquitto version 2.0.22 running
+1758674701: mosquitto version 2.0.22 terminating
+1758674701: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1758674708: mosquitto version 2.0.22 starting
+1758674708: Config loaded from /mosquitto/config/mosquitto.conf.
+1758674708: Opening ipv4 listen socket on port 1883.
+1758674708: Opening ipv6 listen socket on port 1883.
+1758674708: Opening websockets listen socket on port 9001.
+1758674708: mosquitto version 2.0.22 running
+1758674743: mosquitto version 2.0.22 terminating
+1758674743: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1758674746: mosquitto version 2.0.22 starting
+1758674746: Config loaded from /mosquitto/config/mosquitto.conf.
+1758674746: Opening ipv4 listen socket on port 1883.
+1758674746: Opening ipv6 listen socket on port 1883.
+1758674746: Opening websockets listen socket on port 9001.
+1758674746: mosquitto version 2.0.22 running
+1758675051: New client connected from ::ffff:172.18.0.1:43416 as filozinha123 (p1, c1, k60).
+1758676622: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1758678503: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1758680244: Client filozinha123 disconnected.
+1758680358: mosquitto version 2.0.22 terminating
+1758680358: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1758680400: mosquitto version 2.0.22 starting
+1758680400: Config loaded from /mosquitto/config/mosquitto.conf.
+1758680400: Opening ipv4 listen socket on port 1883.
+1758680400: Opening ipv6 listen socket on port 1883.
+1758680400: Opening websockets listen socket on port 9001.
+1758680400: mosquitto version 2.0.22 running
+1758680701: mosquitto version 2.0.22 starting
+1758680701: Config loaded from /mosquitto/config/mosquitto.conf.
+1758680701: Opening ipv4 listen socket on port 1883.
+1758680701: Opening ipv6 listen socket on port 1883.
+1758680701: Opening websockets listen socket on port 9001.
+1758680701: mosquitto version 2.0.22 running
+1758681598: New client connected from ::ffff:172.18.0.1:55508 as filozinha123 (p1, c1, k60).
+1758681607: Client filozinha123 closed its connection.
+1758682588: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1758684479: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1758686373: Saving in-memory database to /mosquitto/data//mosquitto.db.
+1758686895: New connection from 172.18.0.1:35830 on port 1883.
+1758686895: New client connected from 172.18.0.1:35830 as auto-5BF3AF34-EE4B-AF09-553F-DA94FBB424A2 (p2, c1, k60).
+1758687419: Client auto-5BF3AF34-EE4B-AF09-553F-DA94FBB424A2 closed its connection.
+1758687494: mosquitto version 2.0.22 terminating
+1758687494: Saving in-memory database to /mosquitto/data//mosquitto.db.
