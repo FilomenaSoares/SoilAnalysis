@@ -6,3 +6,5 @@ djangorestframework
 markdown      
 django-filter
 paho-mqtt
+pygments
+httpie

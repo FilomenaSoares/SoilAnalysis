@@ -17,8 +17,16 @@ DEBUG = True #Trocar para falso em prod
 
 ALLOWED_HOSTS = ["www.soilanalysis.com.br", "soilanalysis.com.br", "localhost", "127.0.0.1", "web"]
 
-# Application definition
 
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
+
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -26,7 +34,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'DHT11'
+    'DHT11',
+    'rest_framework',
     
     
 ]

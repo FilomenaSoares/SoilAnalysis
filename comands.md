@@ -38,9 +38,7 @@ pip freeze | Select-String psycopg2 > requirements.txt
 
 environments ip: 127.0.0.1
 
+pip3 install paho-mqtt<2.0.0
+pip3 install paho-mqtt
 
-9001
-https://www.hivemq.com/demos/websocket-client/
-host: localhost
-port: 9001
-desmarcar ssl / a conexão é por tcp/WebSocket
+python mqtt_client.py

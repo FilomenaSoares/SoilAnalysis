@@ -46,21 +46,6 @@ services:
     networks:
       - postgres-docker-network
 
- mqtt:
-    container_name: mqtt-broker
-    image: eclipse-mosquitto
-    restart: always
-    ports:
-      - "1883:1883"   # MQTT
-      - "9001:9001"   # WebSocket
-    volumes:
-      - ./mqtt/config:/mosquitto/config:ro
-      - ./mqtt/data:/mosquitto/data
-      - ./mqtt/log:/mosquitto/log
-    networks:
-      - postgres-docker-network
-
-
 volumes:
   postgres_data:  # mesmo nome do volume externo definido na linha 10
   pgadmin:
