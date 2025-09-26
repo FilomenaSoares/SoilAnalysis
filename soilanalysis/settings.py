@@ -15,7 +15,7 @@ SECRET_KEY = "test"
 
 DEBUG = True #Trocar para falso em prod
 
-ALLOWED_HOSTS = ["www.soilanalysis.com.br", "soilanalysis.com.br", "localhost", "127.0.0.1", "web"]
+ALLOWED_HOSTS = ["www.soilanalysis.com.br", "soilanalysis.com.br", "localhost", "127.0.0.1", "web", "soilanalysis-production.up.railway.app"]
 
 
 REST_FRAMEWORK = {
