@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Últimos dados do DHT11</title>
+</head>
+<body>
+    <h1>Últimas leituras do sensor</h1>
+    <ul>
+        {% for dado in dados %}
+            <li>
+                Temperatura: {{ dado.temperatura }} °C | 
+                Umidade: {{ dado.umidade }} % |
+                {{ dado.timestamp }}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
