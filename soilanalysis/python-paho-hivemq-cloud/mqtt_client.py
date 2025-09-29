@@ -49,11 +49,11 @@ def on_message(client, userdata, msg):
         hum = data.get("humidity")
 
         DHT11Data.objects.create(
-            topic=msg.topic,
             temperatura=temp,
-            umidade=hum
+            umidade=hum,
+            timestamp=time.strftime('%d-%m-%Y %H:%M:%S')
         )
-        print(f"Dados salvos: Temp={temp}°C, Hum={hum}%")
+        print(f"Dados salvos: Temp={temp}°C, Hum={hum}%, Timestamp={time.strftime('%d-%m-%Y %H:%M:%S')}")
     except Exception as e:
         print(f" Erro ao processar mensagem: {e}")
 
