@@ -1,44 +1,87 @@
+# Guia de Comandos e Operações do Projeto SoilAnalysis
+## Este arquivo é o manual completo para instalar, executar e gerenciar o projeto.
 
-docker image list [Para visualizar a lista de imagens ativas no docker]
+# 🚀 Guia Rápido para Iniciar (Workflow Principal)
+Siga estes 3 passos para colocar o projeto no ar e recebendo dados.
 
-Subir o projeto com Docker Compose
-docker-compose up -d
-Reconstrói todas as imagens se necessário.
+## 1. Subir o Ambiente (Site + Banco de Dados)
+Este é o primeiro comando. Ele constrói e inicia todos os "containers" do Docker.
 
+Abra um terminal e execute:
 
-Verificar containers ativos
+```
+docker-compose up --build
+```
+
+Use a opção --build sempre que houver alterações nos arquivos Dockerfile ou requirements.txt.
+
+## 2. Criar as Tabelas no Banco (Apenas na Primeira Vez)
+Se for a primeira vez rodando, o banco de dados estará vazio. Este comando cria as tabelas.
+
+Abra um NOVO terminal e execute:
+
+```
+docker-compose exec web python manage.py migrate
+```
+
+## 3. Iniciar o Coletor de Dados do Sensor (Ouvinte MQTT)
+Este comando inicia o script que recebe os dados do sensor e salva no banco. Ele deve ser mantido rodando em um terminal separado.
+
+Abra um TERCEIRO terminal e execute:
+
+```
+docker-compose exec web python manage.py start_mqtt_listener
+```
+
+## ⚙️ Gerenciamento do Ambiente Docker
+Comandos úteis para o dia a dia.
+
+Verificar containers ativos:
+
+```
 docker compose ps
+```
 
-Acessar o container Django 
-python manage.py makemigrations
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py runserver 0.0.0.0:8000
+Parar o ambiente:
+(Para todos os containers e remove as redes)
 
-
-Parar o ambiente
+```
 docker compose down
-Para todos os containers e remove a rede criada pelo Compose.
-As imagens não são removidas, apenas os containers temporários.
+```
 
-Se fizer alterações no requirements.txt ou Dockerfile, sempre use:
-docker compose up --build
-docker-compose up -d
+Visualizar a lista de imagens Docker:
+```
+docker image list
+```
 
-Portainer commando
+## 🐍 Comandos Comuns do Django
+Estes comandos devem ser executados "dentro" do container web.
+
+Criar um superusuário (para acessar a área de admin):
+
+```
+docker-compose exec web python manage.py createsuperuser
+```
+
+Criar novas "migrações" (após alterar os models.py):
+
+```
+docker-compose exec web python manage.py makemigrations
+```
+
+## 🛠️ Avançado e Solução de Problemas
+Instalação do Portainer (Interface Gráfica para o Docker):
+(Opcional, para quem prefere gerenciar os containers visualmente)
+
+```
 docker run -d -p 9000:9000 -p 8000:8000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
+```
+Acesse em: http://localhost:9000/
 
-Porta do Portainer:
-http://localhost:9000/
+Solução para erro com psycopg2 (conector do PostgreSQL):
+(Se ocorrer um erro de compilação durante o build)
 
-erro com psycopg2: 
-pip install psycopg-binary 
-pip freeze | Select-String psycopg2
-pip freeze | Select-String psycopg2 > requirements.txt
-
-environments ip: 127.0.0.1
-
-pip3 install paho-mqtt<2.0.0
-pip3 install paho-mqtt
-
-python mqtt_client.py
+```
+pip install psycopg2-binary
+pip freeze > requirements.txt
+```
