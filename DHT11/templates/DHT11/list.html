@@ -1,18 +1,125 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
+
 <head>
-    <title>Últimos dados do DHT11</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Condições Climáticas</title>
+    <!-- Incluindo a biblioteca Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        h1,
+        h2 {
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-container {
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #eef;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            font-family: monospace;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: #ddd;
+            margin: 30px 0;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Condições Climáticas</h1>
-    <ul>
-        {% for dado in dados %}
+    <div class="container">
+        <h1>Condições Climáticas - Últimas Leituras</h1>
+        <ul>
+            {% for data in latest_data %}
             <li>
-                Temperatura: {{ dado.temperatura }} °C | 
-                Umidade: {{ dado.umidade }} % |
-                {{ dado.timestamp }}
+                Temperatura: {{ data.temperatura }}°C | Umidade: {{ data.umidade }}% | {{ data.timestamp }}
             </li>
-        {% endfor %}
-    </ul>
+            {% endfor %}
+        </ul>
+
+        <hr>
+
+        <div class="chart-container">
+            <h2>Histórico Recente</h2>
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Pegando os dados que o Django enviou do views.py
+        const labels = JSON.parse('{{ labels_json|safe }}');
+        const temperatures = JSON.parse('{{ temperatures_json|safe }}');
+        const humidities = JSON.parse('{{ humidities_json|safe }}');
+
+        const data = {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Temperatura (°C)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: temperatures,
+                    tension: 0.3,
+                    fill: true
+                },
+                {
+                    label: 'Umidade (%)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgb(54, 162, 235)',
+                    data: humidities,
+                    tension: 0.3,
+                    fill: true
+                }
+            ]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                scales: {
+                    y: { beginAtZero: false }
+                },
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true, text: 'Variação de Temperatura e Umidade' }
+                }
+            }
+        };
+
+        const myChart = new Chart(document.getElementById('myChart'), config);
+    </script>
 </body>
+
 </html>

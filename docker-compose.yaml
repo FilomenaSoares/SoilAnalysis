@@ -1,30 +1,44 @@
 services:
+  web:
+    container_name: soilanalysis-web
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    networks:
+      # <-- ADICIONE ESTA LINHA
+      - postgres-docker-network # <-- E ESTA TAMBÉM. Isso conecta o 'web' à mesma rede do 'db'.
 
- db:
-   container_name: postgres-docker
-   image: postgres:17
-   restart: always
-   user: postgres
-   volumes:
-     - postgres_data:/var/lib/postgresql/data
-   environment:
-     POSTGRES_USER: ${DATABASE_USERNAME}
-     POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-     POSTGRES_DB: ${DATABASE_NAME}
-   ports:
-     - "5431:5432"
-   networks:
-     - postgres-docker-network
-   env_file:
-     - .env
+  db:
+    container_name: postgres-docker
+    image: postgres:17
+    restart: always
+    user: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    ports:
+      - "5431:5432"
+    networks:
+      - postgres-docker-network
+    env_file:
+      - .env
 
-
- pgadmin:
+  pgadmin:
     container_name: postgres-docker-pgadmin
     image: dpage/pgadmin4
     restart: unless-stopped
     volumes:
-       - pgadmin:/var/lib/pgadmin
+      - pgadmin:/var/lib/pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
@@ -33,8 +47,10 @@ services:
       - 5050:80
     networks:
       - postgres-docker-network
+    depends_on:
+      - db
 
- mailhog:
+  mailhog:
     container_name: postgres-docker-mailhog
     image: mailhog/mailhog
     restart: always
@@ -47,8 +63,11 @@ services:
       - postgres-docker-network
 
 volumes:
-  postgres_data:  # mesmo nome do volume externo definido na linha 10
+  postgres_data:
   pgadmin:
+
 
 networks:
   postgres-docker-network:
+
+
