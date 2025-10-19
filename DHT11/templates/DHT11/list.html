@@ -1,216 +1,48 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Condições Climáticas</title>
+    <title>Soil Analysis</title>
+    <link rel="stylesheet" href="{% static 'DHT11/list.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f0f2f5;
-            color: #333;
-        }
-
-        .dashboard-container {
-            max-width: 1200px;
-            margin: auto;
-        }
-
-        .card {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            margin-bottom: 25px;
-        }
-
-        h1,
-        h2 {
-            color: #1a202c;
-            text-align: center;
-        }
-
-        h1 {
-            margin-bottom: 30px;
-        }
-
-        h2 {
-            margin-bottom: 15px;
-            font-size: 1.25rem;
-        }
-
-        /* Estilos para a seção dos Gauges */
-        .gauges-section {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 25px;
-            justify-content: center;
-            margin-bottom: 25px;
-        }
-
-        .gauge-wrapper {
-            flex: 1;
-            min-width: 250px;
-            max-width: 300px;
-            text-align: center;
-            position: relative;
-        }
-
-        .gauge-label {
-            position: absolute;
-            top: 65%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2.5rem;
-            font-weight: bold;
-        }
-
-        .temp-color {
-            color: #ff6384;
-        }
-
-        .humidity-color {
-            color: #36a2eb;
-        }
-
-        .history-container {
-            width: 100%;
-            margin-top: 20px;
-        }
-    </style>
 </head>
-
 <body>
-    <div class="dashboard-container">
-        <h1>Dashboard de Condições Climáticas</h1>
+<div class="container">
 
-        <!-- Seção dos Gauges para leitura atual -->
-        <div class="card gauges-section">
-            <div class="gauge-wrapper">
-                <h2>Temperatura Atual</h2>
-                <canvas id="tempGauge"></canvas>
-                <div id="tempValue" class="gauge-label temp-color">--</div>
-            </div>
-            <div class="gauge-wrapper">
-                <h2>Umidade Atual</h2>
-                <canvas id="humidityGauge"></canvas>
-                <div id="humidityValue" class="gauge-label humidity-color">--</div>
-            </div>
+    <div class="navbar"></div>
+
+    <div class="tituloLocal">
+        <h1>Fazenda Teste</h1>
+    </div>
+
+    <div class="leftSide">
+
+        <div class="umidadeTempArAtual">
+          {% if current_data %}
+            <p>Temperatura: {{ current_data.temperatura }} °C</p>
+            <p>Umidade: {{ current_data.umidade }} %</p>
+         <p>Atualizado em: {{ current_data.timestamp|time:"H:i:s" }}</p>
+             {% else %}
+          <p>Sem dados disponíveis</p>
+             {% endif %}
         </div>
 
-        <!-- Seção do Histórico (gráfico de linha) -->
-        <div class="card">
-            <h2>Histórico Recente</h2>
-            <div class="history-container">
-                <canvas id="historyChart"></canvas>
-            </div>
+        <div class="umidadeTempGrafico">
+            <canvas id="sensorChart" width="780" height="340"></canvas>
         </div>
     </div>
 
-    <script>
-        // Pegando os dados que o Django enviou do views.py
-        const labels = JSON.parse('{{ labels_json|safe }}');
-        const temperatures = JSON.parse('{{ temperatures_json|safe }}');
-        const humidities = JSON.parse('{{ humidities_json|safe }}');
+    <div class="rightSide">
+        <div class="umidadeSoloAtual"></div>
+        <div class="LitrosUtilizados"></div>
+    </div>
 
-        // Pega a leitura mais recente (a primeira da lista)
-        const latestTemp = temperatures.length > 0 ? temperatures[0] : 0;
-        const latestHumidity = humidities.length > 0 ? humidities[0] : 0;
+</div>
 
-        // Atualiza os valores no centro dos gauges
-        document.getElementById('tempValue').innerText = latestTemp.toFixed(1) + '°C';
-        document.getElementById('humidityValue').innerText = latestHumidity.toFixed(1) + '%';
+<script src="{% static 'DHT11/script.js' %}"></script>
 
-
-        // --- LÓGICA PARA O GAUGE DE TEMPERATURA ---
-        const tempGaugeData = {
-            datasets: [{
-                data: [latestTemp, 50 - latestTemp], // Valor atual e o restante para completar a escala (0-50°C)
-                backgroundColor: ['#ff6384', '#f0f2f5'],
-                borderColor: ['#ff6384', '#f0f2f5'],
-                borderWidth: 1,
-                circumference: 180, // Meio círculo
-                rotation: -90,      // Começa da esquerda
-            }]
-        };
-        const tempGaugeConfig = {
-            type: 'doughnut',
-            data: tempGaugeData,
-            options: {
-                responsive: true,
-                cutout: '80%',
-                plugins: {
-                    tooltip: { enabled: false } // Desativa dicas ao passar o mouse
-                }
-            }
-        };
-        new Chart(document.getElementById('tempGauge'), tempGaugeConfig);
-
-
-        // --- LÓGICA PARA O GAUGE DE UMIDADE ---
-        const humidityGaugeData = {
-            datasets: [{
-                data: [latestHumidity, 100 - latestHumidity], // Valor atual e o restante (0-100%)
-                backgroundColor: ['#36a2eb', '#f0f2f5'],
-                borderColor: ['#36a2eb', '#f0f2f5'],
-                borderWidth: 1,
-                circumference: 180,
-                rotation: -90,
-            }]
-        };
-        const humidityGaugeConfig = {
-            type: 'doughnut',
-            data: humidityGaugeData,
-            options: {
-                responsive: true,
-                cutout: '80%',
-                plugins: {
-                    tooltip: { enabled: false }
-                }
-            }
-        };
-        new Chart(document.getElementById('humidityGauge'), humidityGaugeConfig);
-
-
-        // --- LÓGICA PARA O GRÁFICO DE HISTÓRICO (seu código original, adaptado) ---
-        const historyData = {
-            labels: labels,
-            datasets: [{
-                label: 'Temperatura (°C)',
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: '#ff6384',
-                data: temperatures,
-                tension: 0.3,
-                fill: true
-            }, {
-                label: 'Umidade (%)',
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: '#36a2eb',
-                data: humidities,
-                tension: 0.3,
-                fill: true
-            }]
-        };
-        const historyConfig = {
-            type: 'line',
-            data: historyData,
-            options: {
-                scales: {
-                    y: { beginAtZero: false }
-                },
-                responsive: true,
-                plugins: {
-                    legend: { position: 'top' },
-                    title: { display: false } // Título já está no card
-                }
-            }
-        };
-        new Chart(document.getElementById('historyChart'), historyConfig);
-    </script>
 </body>
-
 </html>

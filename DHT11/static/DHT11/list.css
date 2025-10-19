@@ -1,0 +1,61 @@
+.container {  display: grid;
+  grid-template-columns: 1.7fr 0.1fr 1.5fr;
+  grid-template-rows: 0.2fr 0.2fr 2.6fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "navbar navbar navbar"
+    "tituloLocal tituloLocal tituloLocal"
+    "leftSide . rightSide";
+}
+
+.navbar { grid-area: navbar; }
+
+.tituloLocal {
+    grid-area: tituloLocal;
+    text-align: center; 
+}
+
+
+.leftSide {  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1.5fr 0.5fr 1fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "umidadeTempArAtual umidadeTempArAtual umidadeTempArAtual"
+    "umidadeTempGrafico umidadeTempGrafico umidadeTempGrafico"
+    "umidadeTempGrafico umidadeTempGrafico umidadeTempGrafico";
+  grid-area: leftSide;
+}
+
+.umidadeTempArAtual { grid-area: umidadeTempArAtual; }
+
+.umidadeTempGrafico { grid-area: umidadeTempGrafico; }
+
+.rightSide {  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 0.5fr 1.5fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "umidadeSoloAtual umidadeSoloAtual umidadeSoloAtual"
+    "umidadeSoloAtual umidadeSoloAtual umidadeSoloAtual"
+    "LitrosUtilizados LitrosUtilizados LitrosUtilizados";
+  grid-area: rightSide;
+}
+
+.umidadeSoloAtual { grid-area: umidadeSoloAtual; }
+
+.LitrosUtilizados { grid-area: LitrosUtilizados; }
+
+
+html, body , .container {
+  height: 100%;
+  margin: 0;
+}
+
+/* For presentation only, no need to copy the code below */
+
+
+

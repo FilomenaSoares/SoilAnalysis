@@ -12,8 +12,7 @@ services:
     depends_on:
       - db
     networks:
-      # <-- ADICIONE ESTA LINHA
-      - postgres-docker-network # <-- E ESTA TAMBÉM. Isso conecta o 'web' à mesma rede do 'db'.
+      - postgres-docker-network
 
   db:
     container_name: postgres-docker
