@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'DHT11',
+    'sensorumidade',
+    'dashboard_frontend',
     'rest_framework',
     
     
@@ -56,10 +58,11 @@ ROOT_URLCONF = 'soilanalysis.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        'DIRS': [],  # ou ['templates'] se você quiser uma pasta global de templates
+        'APP_DIRS': True,  # MUITO IMPORTANTE: busca templates dentro de cada app
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',  # ajuda no debug de templates
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',

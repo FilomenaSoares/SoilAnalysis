@@ -52,7 +52,7 @@ services:
   mailhog:
     container_name: postgres-docker-mailhog
     image: mailhog/mailhog
-    restart: always
+    restart: always  
     logging:
       driver: 'none'
     ports:
