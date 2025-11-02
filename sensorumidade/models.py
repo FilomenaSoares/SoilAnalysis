@@ -1,9 +1,10 @@
 from django.db import models
+from django.utils import timezone
 
 class sensorumidadeData(models.Model):
-    umidadesolo=models.FloatField()
-    timestampSolo = models.FloatField()
-
+    umidadesolo = models.FloatField()
+    timestampSolo = models.DateTimeField(auto_now_add=True) 
 
     def __str__(self):
-        return f"Sensor {self.sensor_id} - {self.umidadesolo}%" 
+        if isinstance(self.timestampSolo, timezone.datetime):
+             return f"{self.timestampSolo.strftime('%Y-%m-%d %H:%M')} - {self.umidadesolo}%"
