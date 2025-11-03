@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,27 +15,30 @@
             margin: 0;
             color: #333;
         }
-        
+
         /* cabeçalho */
         .header {
-            background-color: #3a5a40; 
+            background-color: #3a5a40;
             padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             color: white;
         }
+
         .header-logo img {
-            height: 40px; /*logo*/
+            height: 40px;
+            /*logo*/
             margin-right: 10px;
         }
+
         .header-user {
             background-color: rgba(255, 255, 255, 0.2);
             padding: 8px 12px;
             border-radius: 20px;
             font-size: 0.9em;
         }
-        
+
         /* --- Conteúdo Principal --- */
         .main-container {
             padding: 20px;
@@ -63,13 +67,13 @@
         }
 
         .column-left {
-            flex: 2; 
+            flex: 2;
             min-width: 300px;
         }
 
         .column-right {
             flex: 1;
-            min-width: 300px; 
+            min-width: 300px;
         }
 
         /* --- Cartões de Dados --- */
@@ -78,7 +82,7 @@
             border: 1px solid #e0e0e0;
             border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         .section-title {
@@ -90,7 +94,7 @@
         }
 
         .card-title {
-            background-color: #fcf8e3; 
+            background-color: #fcf8e3;
             border: 1px solid #faebcc;
             color: #8a6d3b;
             padding: 5px 10px;
@@ -99,7 +103,7 @@
             margin-bottom: 15px;
             font-weight: bold;
         }
-        
+
         /* card - dados atuais (temp/umidade ar) */
         .current-data-container {
             display: flex;
@@ -107,12 +111,13 @@
             align-items: center;
             text-align: center;
         }
+
         .data-point {
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        
+
         .data-point-icon-img {
             height: 50px;
             width: 50px;
@@ -129,29 +134,33 @@
         .soil-moisture-card {
             text-align: center;
         }
+
         .soil-moisture-value {
             font-size: 3.5em;
             font-weight: bold;
             color: #333;
             margin: 10px 0;
         }
+
         .soil-moisture-img {
             width: 100%;
             max-width: 250px;
             margin: 10px auto 0;
             display: block;
         }
-        
+
         /* card - litros utilizados */
         .liters-used-card {
             text-align: center;
         }
+
         .liters-used-value {
             font-size: 3.5em;
             font-weight: bold;
             color: #333;
             margin: 10px 0;
         }
+
         .liters-used-icon-img {
             height: 60px;
             margin-top: 10px;
@@ -163,9 +172,12 @@
             .dashboard-grid {
                 flex-direction: column;
             }
-            .column-left, .column-right {
-                flex: 1; 
+
+            .column-left,
+            .column-right {
+                flex: 1;
             }
+
             .current-data-container {
                 flex-direction: column;
                 gap: 20px;
@@ -173,6 +185,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <header class="header">
@@ -195,11 +208,13 @@
                     <h3 class="card-title">Umidade do Ar e Temperatura (Atual)</h3>
                     <div class="current-data-container">
                         <div class="data-point">
-                            <img src="{% static 'images/termometro.png' %}" alt="Termômetro" class="data-point-icon-img">
+                            <img src="{% static 'images/termometro.png' %}" alt="Termômetro"
+                                class="data-point-icon-img">
                             <span id="current-temp" class="data-point-value">--°</span>
                         </div>
                         <div class="data-point">
-                            <img src="{% static 'images/air-conditioner-icon.png' %}" alt="Umidade Ar" class="data-point-icon-img">
+                            <img src="{% static 'images/air-conditioner-icon.png' %}" alt="Umidade Ar"
+                                class="data-point-icon-img">
                             <span id="current-air-humidity" class="data-point-value">--%</span>
                         </div>
                     </div>
@@ -214,11 +229,12 @@
             </section>
 
             <section class="column column-right">
-                
+
                 <article class="card soil-moisture-card">
                     <h3 class="card-title">Umidade Atual do Solo</h3>
                     <div id="current-soil-humidity" class="soil-moisture-value">--%</div>
-                    <img src="{% static 'images/crescimento-planta.png' %}" alt="Crescimento da planta" class="soil-moisture-img">
+                    <img src="{% static 'images/crescimento-planta.png' %}" alt="Crescimento da planta"
+                        class="soil-moisture-img">
                 </article>
 
                 <article class="card liters-used-card">
@@ -233,14 +249,19 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // 1. Roda as funções uma vez assim que a página carrega
             fetchCurrentData();
             fetchChartData();
-            // setInterval(fetchCurrentData, 60000); // Atualiza dados a cada 1 minuto
+
+            // 2. Roda as funções repetidamente a cada 5 segundos
+            // (5000 milissegundos = 5 segundos)
+            setInterval(fetchCurrentData, 5000); // Atualiza os cards (Umidade Atual, etc.)
+            setInterval(fetchChartData, 5000);  // Atualiza o gráfico de linha
         });
 
         // DADOS ATUAIS 
         async function fetchCurrentData() {
-            
+
             const urlDht11Atual = '/api/dados/dht11/atual/';
             const urlUmidadeSoloAtual = '/api/dados/umidade/atual/';
             const urlLitros = '/api/dados/irrigacao/litros_hoje/';
@@ -255,7 +276,7 @@
                 // busca dados da Umidade do Solo
                 const responseUmidadeSolo = await fetch(urlUmidadeSoloAtual);
                 const dataUmidadeSolo = await responseUmidadeSolo.json();
-                
+
 
                 document.getElementById('current-soil-humidity').textContent = `${dataUmidadeSolo.umidadesolo}%`;
 
@@ -279,13 +300,13 @@
 
         // FUNÇÃO DO GRÁFICO 
         async function fetchChartData() {
-            
+
             const urlDht11Historico = '/api/dados/dht11/historico_dia/';
 
             try {
                 const response = await fetch(urlDht11Historico);
                 const data = await response.json();
-                
+
                 const labels = data.map(item => item.hora);
                 const temperaturaData = data.map(item => item.temperatura);
                 const umidadeData = data.map(item => item.umidade);
@@ -300,11 +321,11 @@
         // RENDERIZAR O GRÁFICO 
         function renderChart(labels, temperaturaData, umidadeData) {
             const ctx = document.getElementById('tempUmidadeChart').getContext('2d');
-            
+
             if (window.myChart instanceof Chart) {
                 window.myChart.destroy();
             }
-            
+
             window.myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -342,7 +363,7 @@
                                 text: 'Hora'
                             }
                         },
-                        y: { 
+                        y: {
                             type: 'linear',
                             display: true,
                             position: 'left',
@@ -351,7 +372,7 @@
                                 text: 'Temperatura (°C)'
                             }
                         },
-                        y1: { 
+                        y1: {
                             type: 'linear',
                             display: true,
                             position: 'right',
@@ -360,7 +381,7 @@
                                 text: 'Umidade (%)'
                             },
                             grid: {
-                                drawOnChartArea: false, 
+                                drawOnChartArea: false,
                             },
                         }
                     }
@@ -369,4 +390,5 @@
         }
     </script>
 </body>
+
 </html>

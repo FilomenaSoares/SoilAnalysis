@@ -2,10 +2,14 @@ from django.shortcuts import render
 import json
 from sensorumidade.models import sensorumidadeData
 from DHT11.models import DHT11Data
-from datetime import datetime
+# 'datetime' não é mais necessário aqui
+# from datetime import datetime 
 
 
 def telainicial(request):
+    
+    # --- DADOS PARA OS GRÁFICOS ---
+
     # umidade do solo 
     solo_qs = sensorumidadeData.objects.order_by('-timestampSolo')[:20]
     solo_reverse = list(reversed(solo_qs))
@@ -13,9 +17,10 @@ def telainicial(request):
     solo_values = []
 
     for d in solo_reverse:
+        # CORRIGIDO: d.timestampSolo JÁ É um objeto datetime
         try:
             if d.timestampSolo:  
-                hora = datetime.fromtimestamp(d.timestampSolo).strftime('%H:%M:%S')
+                hora = d.timestampSolo.strftime('%H:%M:%S') # <-- BUG CORRIGIDO AQUI
             else:
                 hora = ""
         except Exception:
@@ -42,15 +47,26 @@ def telainicial(request):
         ar_temp_values.append(d.temperatura or 0)
         ar_hum_values.append(d.umidade or 0)
 
+    
+    # --- DADOS PARA OS CARDS (NOVA LÓGICA) ---
+    # Busca o último registro de cada sensor de forma segura
+    latest_ar = DHT11Data.objects.order_by('-timestamp').first()
+    latest_solo = sensorumidadeData.objects.order_by('-timestampSolo').first()
+
+
     # context enviado p/ template 
     context = {
+        # Dados dos gráficos
         'solo_labels': json.dumps(solo_labels),
         'solo_values': json.dumps(solo_values),
         'ar_labels': json.dumps(ar_labels),
         'ar_temp_values': json.dumps(ar_temp_values),
         'ar_hum_values': json.dumps(ar_hum_values),
-        'last_solo': solo_qs[:1],
-        'last_ar': ar_qs[:1],
+
+        # Dados dos cards (AGORA CORRIGIDO)
+        # Enviamos o objeto inteiro. O template acessará .umidadesolo, .temperatura, etc.
+        'latest_solo': latest_solo, 
+        'latest_ar': latest_ar,
     }
 
     return render(request, "dashboard_frontend/inicio.html", context)

@@ -6,9 +6,12 @@ class sensorumidadeSerializer(serializers.ModelSerializer):
         model = sensorumidadeData
         fields = ('umidadesolo', 'timestampSolo')
 
+# --- CORRIGIDO ---
 class sensorumidadeAtualSerializer(serializers.ModelSerializer):
-    umidade = serializers.FloatField(source='umidadesolo')
+    # Não precisamos renomear o campo, podemos usá-lo diretamente
+    # umidade = serializers.FloatField(source='umidadesolo') # <-- REMOVIDO
 
     class Meta: 
         model = sensorumidadeData
-        fields = ('umidade',) 
+        # Apenas diga ao serializer para usar o campo 'umidadesolo'
+        fields = ('umidadesolo',) # <-- CORRIGIDO
