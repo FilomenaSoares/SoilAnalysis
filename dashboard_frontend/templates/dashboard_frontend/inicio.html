@@ -238,11 +238,7 @@
                         class="soil-moisture-img">
                 </article>
 
-                <article class="card liters-used-card">
-                    <h3 class="card-title">Litros Utilizados Até o Momento (Dados diários)</h3>
-                    <div id="liters-used" class="liters-used-value">-- L</div>
-                    <img src="{% static 'images/gota-agua.png' %}" alt="Gota d'água" class="liters-used-icon-img">
-                </article>
+               
 
             </section>
         </div>
@@ -281,15 +277,6 @@
 
                 document.getElementById('current-soil-humidity').textContent = `${dataUmidadeSolo.umidadesolo}%`;
 
-                // busca dados de Litros Utilizados
-                try {
-                    const responseLitros = await fetch(urlLitros);
-                    const dataLitros = await responseLitros.json();
-                    document.getElementById('liters-used').textContent = `${dataLitros.litros} L`;
-                } catch (error) {
-                    console.warn(`Endpoint de Litros (${urlLitros}) não encontrado. Usando valor padrão.`);
-                    document.getElementById('liters-used').textContent = `50.5 L`; // Valor de exemplo
-                }
 
             } catch (error) {
                 console.error('Erro ao buscar dados atuais:', error);
