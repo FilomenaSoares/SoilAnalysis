@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import DHT11Data
+from django.utils import timezone  # <-- 1. ADICIONE ESTA IMPORTAÇÃO
 
 class DHT11Serializer(serializers.ModelSerializer):
     class Meta:
@@ -14,4 +15,8 @@ class DHT11ChartSerializer(serializers.ModelSerializer):
         fields = ('temperatura', 'umidade', 'hora')
 
     def get_hora(self, obj):
-        return obj.timestamp.strftime('%H:%M')
+        # 2. CORREÇÃO APLICADA AQUI
+        # Converte o timestamp UTC para o fuso horário local do seu servidor
+        local_time = timezone.localtime(obj.timestamp)
+        # Formata a hora local convertida
+        return local_time.strftime('%H:%M')

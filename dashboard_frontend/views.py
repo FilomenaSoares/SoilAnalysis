@@ -2,9 +2,7 @@ from django.shortcuts import render
 import json
 from sensorumidade.models import sensorumidadeData
 from DHT11.models import DHT11Data
-# 'datetime' não é mais necessário aqui
-# from datetime import datetime 
-
+from django.utils import timezone # <-- ADICIONADO
 
 def telainicial(request):
     
@@ -17,10 +15,11 @@ def telainicial(request):
     solo_values = []
 
     for d in solo_reverse:
-        # CORRIGIDO: d.timestampSolo JÁ É um objeto datetime
         try:
-            if d.timestampSolo:  
-                hora = d.timestampSolo.strftime('%H:%M:%S') # <-- BUG CORRIGIDO AQUI
+            if d.timestampSolo:
+                # CONVERSÃO DE FUSO HORÁRIO ADICIONADA
+                local_time_solo = timezone.localtime(d.timestampSolo) 
+                hora = local_time_solo.strftime('%H:%M:%S') # <-- CORRIGIDO
             else:
                 hora = ""
         except Exception:
@@ -38,7 +37,9 @@ def telainicial(request):
     for d in ar_reverse:
         try:
             if d.timestamp:
-                hora = d.timestamp.strftime('%H:%M:%S')
+                # CONVERSÃO DE FUSO HORÁRIO ADICIONADA
+                local_time_ar = timezone.localtime(d.timestamp)
+                hora = local_time_ar.strftime('%H:%M:%S') # <-- CORRIGIDO
             else:
                 hora = ""
         except Exception:
@@ -48,8 +49,7 @@ def telainicial(request):
         ar_hum_values.append(d.umidade or 0)
 
     
-    # --- DADOS PARA OS CARDS (NOVA LÓGICA) ---
-    # Busca o último registro de cada sensor de forma segura
+    # --- DADOS PARA OS CARDS (LÓGICA CORRETA) ---
     latest_ar = DHT11Data.objects.order_by('-timestamp').first()
     latest_solo = sensorumidadeData.objects.order_by('-timestampSolo').first()
 
@@ -63,8 +63,7 @@ def telainicial(request):
         'ar_temp_values': json.dumps(ar_temp_values),
         'ar_hum_values': json.dumps(ar_hum_values),
 
-        # Dados dos cards (AGORA CORRIGIDO)
-        # Enviamos o objeto inteiro. O template acessará .umidadesolo, .temperatura, etc.
+        # Dados dos cards
         'latest_solo': latest_solo, 
         'latest_ar': latest_ar,
     }
