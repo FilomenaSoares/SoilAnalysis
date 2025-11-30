@@ -1,0 +1,185 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fazenda Campo Largo</title>
+
+    <style>
+        body {
+            background-color: #f5f7f4;
+            font-family: "Segoe UI", sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .top-bar {
+            background: #2f4f2f;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .top-bar img {
+            height: 40px;
+        }
+
+        .user-box {
+            background: #3d613d;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .title {
+            text-align: center;
+            margin-top: 35px;
+            font-size: 36px;
+            color: #4a6b3f;
+            font-weight: 600;
+        }
+
+        .container {
+            width: 90%;
+            margin: auto;
+            margin-top: 30px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .box {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            font-weight: 600;
+            color: #4a6b3f;
+            margin-bottom: 10px;
+        }
+
+        .value {
+            font-size: 40px;
+            font-weight: bold;
+            color: #000;
+            margin-top: 5px;
+        }
+
+        .img-small {
+            width: 140px;
+            margin-top: 10px;
+        }
+
+        .methods-box {
+            text-align: left;
+            line-height: 1.8;
+            font-size: 18px;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        .btn {
+            width: 300px;
+            padding: 14px;
+            font-size: 18px;
+            text-align: center;
+            margin: 10px auto;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            display: block;
+            font-weight: 600;
+        }
+
+        .btn-yellow {
+            background: #f5e3aa;
+            color: #5a4a22;
+        }
+
+        .btn-back {
+            margin-top: 40px;
+            width: 140px;
+            background: #6c8d63;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOPO -->
+    <div class="top-bar">
+        <img src="{% static 'img/logo.png' %}" alt="Logo">
+
+        <div class="user-box">
+            {{ request.user.first_name }} {{ request.user.last_name }}
+        </div>
+    </div>
+
+    <div class="title">Fazenda Campo Largo</div>
+
+    <div class="container">
+
+        <!-- GRID PRINCIPAL -->
+        <div class="grid">
+
+            <!-- BLOCO ESQUERDO -->
+            <div>
+                <div class="box">
+                    <div class="subtitle">Umidade Atual do Solo</div>
+                    <div class="value">
+                        {% if last_solo %}
+                            {{ last_solo.0.umidadesolo|floatformat:0 }}%
+                        {% else %} -- {% endif %}
+                    </div>
+                    <img class="img-small" src="{% static 'img/plantas.png' %}">
+                </div>
+
+                <div class="box" style="margin-top: 20px;">
+                    <div class="subtitle">Litros Utilizados Até o Momento<br>(Dados Diários)</div>
+                    <div class="value">
+                        {% if litros_dia %}
+                            {{ litros_dia|floatformat:1 }} L
+                        {% else %} -- {% endif %}
+                    </div>
+                    <img class="img-small" src="{% static 'img/gota.png' %}">
+                </div>
+            </div>
+
+            <!-- BLOCO DIREITO -->
+            <div class="box">
+                <div class="subtitle">Método de Irrigação Atual</div>
+
+                <div class="methods-box">
+                    <b>{{ metodo.nome }}</b><br>
+
+                    ° Delay entre irrigações:  
+                    <b>{{ metodo.delay_horas }}H</b><br>
+
+                    ° Litros por irrigação:  
+                    <b>{{ metodo.litros_por_vez }}L</b>
+                </div>
+
+                <button class="btn btn-yellow">Irrigação Automatizada</button>
+                <button class="btn btn-yellow">Irrigação Parametrizada Manualmente</button>
+            </div>
+
+        </div>
+
+        <button class="btn btn-back" onclick="window.location.href='/'">VOLTAR</button>
+
+    </div>
+
+</body>
+</html>
