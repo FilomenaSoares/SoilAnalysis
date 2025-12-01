@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Fazenda Campo Largo</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        /* config geral */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -16,7 +16,49 @@
             color: #333;
         }
 
-        /* cabeçalho */
+        /* -------- MENU LATERAL (SIDEBAR) -------- */
+        .menu-btn {
+            font-size: 26px;
+            cursor: pointer;
+            margin-right: 20px;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 2000;
+            top: 0;
+            left: 0;
+            background-color: #2c3e50;
+            overflow-x: hidden;
+            transition: 0.3s;
+            padding-top: 60px;
+        }
+
+        .sidebar a {
+            padding: 12px 20px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #f1f1f1;
+            display: block;
+            transition: 0.2s;
+        }
+
+        .sidebar a:hover {
+            background-color: #3a5a40;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* -------- CABEÇALHO -------- */
         .header {
             background-color: #3a5a40;
             padding: 1px 20px;
@@ -28,10 +70,14 @@
             box-sizing: border-box; /* <-- 2. ADICIONE ISTO */
         }
 
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
         .header-logo img {
-            height: 100px;
-            /*logo*/
-            margin-right: 10px;
+            height: 40px;
+            margin-left: 10px;
         }
 
         .header-user {
@@ -41,7 +87,7 @@
             font-size: 0.9em;
         }
 
-        /* --- Conteúdo Principal --- */
+        /* -------- LAYOUT -------- */
         .main-container {
             padding: 20px;
             max-width: 1200px;
@@ -55,7 +101,6 @@
             margin-bottom: 20px;
         }
 
-        /* --- Layout do Dashboard --- */
         .dashboard-grid {
             display: flex;
             flex-wrap: wrap;
@@ -79,7 +124,7 @@
             padding-top: 78px; /* <-- ADICIONE ESTA LINHA */
         }
 
-        /* --- Cartões de Dados --- */
+        /* -------- CARTÕES -------- */
         .card {
             background-color: #ffffff;
             border: 1px solid #e0e0e0;
@@ -91,7 +136,6 @@
         .section-title {
             font-size: 1.2em;
             color: #555;
-            text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 20px;
         }
@@ -107,7 +151,6 @@
             font-weight: bold;
         }
 
-        /* card - dados atuais (temp/umidade ar) */
         .current-data-container {
             display: flex;
             justify-content: space-around;
@@ -124,25 +167,22 @@
         .data-point-icon-img {
             height: 50px;
             width: 50px;
-            object-fit: contain;
         }
 
         .data-point-value {
             font-size: 2.5em;
             font-weight: bold;
-            color: #333;
         }
 
-        /* card - umidade do solo */
-        .soil-moisture-card {
+        .soil-moisture-card,
+        .liters-used-card {
             text-align: center;
         }
 
-        .soil-moisture-value {
+        .soil-moisture-value,
+        .liters-used-value {
             font-size: 3.5em;
             font-weight: bold;
-            color: #333;
-            margin: 10px 0;
         }
 
         .soil-moisture-img {
@@ -152,33 +192,14 @@
             display: block;
         }
 
-        /* card - litros utilizados */
-        .liters-used-card {
-            text-align: center;
-        }
-
-        .liters-used-value {
-            font-size: 3.5em;
-            font-weight: bold;
-            color: #333;
-            margin: 10px 0;
-        }
-
         .liters-used-icon-img {
             height: 60px;
             margin-top: 10px;
-            object-fit: contain;
         }
 
-        /* Responsividade */
         @media (max-width: 768px) {
             .dashboard-grid {
                 flex-direction: column;
-            }
-
-            .column-left,
-            .column-right {
-                flex: 1;
             }
 
             .current-data-container {
@@ -187,19 +208,32 @@
             }
         }
     </style>
+
 </head>
 
 <body>
 
+    <!-- MENU LATERAL -->
+    <div id="sidebar" class="sidebar">
+        <span class="close-btn" onclick="closeMenu()">&times;</span>
+        <a href="/"> Início</a>
+        <a href="/umidade-solo/gerenciar/"> Gerenciar Umidade do Solo</a>
+        <!-- <a href="#"> Configurações</a> -->
+        <!-- <a href="#"> Relatórios</a> -->
+    </div>
+
+    <!-- CABEÇALHO -->
     <header class="header">
-        <div class="header-logo">
-            <img src="{% static 'images/SoilAnalysis-logo.png' %}" alt="SoilAnalysis Logo">
+        <div class="header-left">
+            <span class="menu-btn" onclick="openMenu()">☰</span>
+            <div class="header-logo">
+                <img src="{% static 'images/SoilAnalysis-logo.png' %}" alt="Logo">
+            </div>
         </div>
-        <div class="header-user">
-            Filomena Soares
-        </div>
+        <div class="header-user">Filomena Soares</div>
     </header>
 
+    <!-- CONTEÚDO -->
     <main class="main-container">
         <h1 class="main-title">Fazenda Campo Largo</h1>
 
@@ -211,13 +245,11 @@
                     <h3 class="card-title">Umidade do Ar e Temperatura (Atual)</h3>
                     <div class="current-data-container">
                         <div class="data-point">
-                            <img src="{% static 'images/termometro.png' %}" alt="Termômetro"
-                                class="data-point-icon-img">
+                            <img src="{% static 'images/termometro.png' %}" class="data-point-icon-img">
                             <span id="current-temp" class="data-point-value">--°</span>
                         </div>
                         <div class="data-point">
-                            <img src="{% static 'images/air-conditioner-icon.png' %}" alt="Umidade Ar"
-                                class="data-point-icon-img">
+                            <img src="{% static 'images/air-conditioner-icon.png' %}" class="data-point-icon-img">
                             <span id="current-air-humidity" class="data-point-value">--%</span>
                         </div>
                     </div>
@@ -225,9 +257,7 @@
 
                 <article class="card">
                     <h3 class="card-title">Umidade do Ar e Temperatura (Ao longo do dia)</h3>
-                    <div>
-                        <canvas id="tempUmidadeChart"></canvas>
-                    </div>
+                    <canvas id="tempUmidadeChart"></canvas>
                 </article>
             </section>
 
@@ -236,61 +266,63 @@
                 <article class="card soil-moisture-card">
                     <h3 class="card-title">Umidade Atual do Solo</h3>
                     <div id="current-soil-humidity" class="soil-moisture-value">--%</div>
-                    <img src="{% static 'images/crescimento-planta.png' %}" alt="Crescimento da planta"
-                        class="soil-moisture-img">
+                    <img src="{% static 'images/crescimento-planta.png' %}" class="soil-moisture-img">
                 </article>
 
-               
+                <article class="card liters-used-card">
+                    <h3 class="card-title">Litros Utilizados Hoje</h3>
+                    <div id="liters-used" class="liters-used-value">-- L</div>
+                    <img src="{% static 'images/gota-agua.png' %}" class="liters-used-icon-img">
+                </article>
 
             </section>
         </div>
     </main>
 
+    <!--  MENU -->
+    <script>
+        function openMenu() {
+            document.getElementById("sidebar").style.width = "260px";
+        }
+        function closeMenu() {
+            document.getElementById("sidebar").style.width = "0";
+        }
+    </script>
+
+    <!-- API E GRÁFICO -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Roda as funções uma vez assim que a página carrega
             fetchCurrentData();
             fetchChartData();
-
-            // 2. Roda as funções repetidamente a cada 5 segundos
-            // (5000 milissegundos = 5 segundos)
-            setInterval(fetchCurrentData, 5000); // Atualiza os cards (Umidade Atual, etc.)
-            setInterval(fetchChartData, 5000);  // Atualiza o gráfico de linha
+            setInterval(fetchCurrentData, 5000);
+            setInterval(fetchChartData, 5000);
         });
 
-        // DADOS ATUAIS 
         async function fetchCurrentData() {
-
             const urlDht11Atual = '/api/dados/dht11/atual/';
             const urlUmidadeSoloAtual = '/api/dados/umidade/atual/';
             const urlLitros = '/api/dados/irrigacao/litros_hoje/';
 
             try {
-                // busca dados do DHT11 (temp e umidade do Ar)
                 const responseDht11 = await fetch(urlDht11Atual);
                 const dataDht11 = await responseDht11.json();
                 document.getElementById('current-temp').textContent = `${dataDht11.temperatura}°`;
                 document.getElementById('current-air-humidity').textContent = `${dataDht11.umidade}%`;
 
-                // busca dados da Umidade do Solo
                 const responseUmidadeSolo = await fetch(urlUmidadeSoloAtual);
                 const dataUmidadeSolo = await responseUmidadeSolo.json();
-
-
                 document.getElementById('current-soil-humidity').textContent = `${dataUmidadeSolo.umidadesolo}%`;
 
+                const responseLitros = await fetch(urlLitros);
+                const dataLitros = await responseLitros.json();
+                document.getElementById('liters-used').textContent = `${dataLitros.litros} L`;
 
             } catch (error) {
                 console.error('Erro ao buscar dados atuais:', error);
-                document.getElementById('current-temp').textContent = `Erro`;
-                document.getElementById('current-air-humidity').textContent = `Erro`;
-                document.getElementById('current-soil-humidity').textContent = `Erro`;
             }
         }
 
-        // FUNÇÃO DO GRÁFICO 
         async function fetchChartData() {
-
             const urlDht11Historico = '/api/dados/dht11/historico_dia/';
 
             try {
@@ -304,11 +336,10 @@
                 renderChart(labels, temperaturaData, umidadeData);
 
             } catch (error) {
-                console.error('Erro ao buscar dados do gráfico:', error);
+                console.error('Erro ao buscar dados:', error);
             }
         }
 
-        // RENDERIZAR O GRÁFICO 
         function renderChart(labels, temperaturaData, umidadeData) {
             const ctx = document.getElementById('tempUmidadeChart').getContext('2d');
 
@@ -324,61 +355,34 @@
                         {
                             label: 'Temperatura',
                             data: temperaturaData,
-                            borderColor: '#e74c3c', // Vermelho
+                            borderColor: '#e74c3c',
                             backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                            yAxisID: 'y',
-                            tension: 0.1
+                            yAxisID: 'y'
                         },
                         {
                             label: 'Umidade',
                             data: umidadeData,
-                            borderColor: '#3498db', // Azul
+                            borderColor: '#3498db',
                             backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                            yAxisID: 'y1',
-                            tension: 0.1
+                            yAxisID: 'y1'
                         }
                     ]
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false,
-                    },
                     scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Hora'
-                            }
-                        },
                         y: {
-                            type: 'linear',
-                            display: true,
-                            position: 'left',
-                            title: {
-                                display: true,
-                                text: 'Temperatura (°C)'
-                            }
+                            position: 'left'
                         },
                         y1: {
-                            type: 'linear',
-                            display: true,
                             position: 'right',
-                            title: {
-                                display: true,
-                                text: 'Umidade (%)'
-                            },
-                            grid: {
-                                drawOnChartArea: false,
-                            },
+                            grid: { drawOnChartArea: false }
                         }
                     }
                 }
             });
         }
     </script>
-</body>
 
+</body>
 </html>

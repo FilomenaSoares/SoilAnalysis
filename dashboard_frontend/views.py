@@ -2,11 +2,12 @@ from django.shortcuts import render
 import json
 from sensorumidade.models import sensorumidadeData
 from DHT11.models import DHT11Data
-from django.utils import timezone # <-- ADICIONADO
+
+
 
 def telainicial(request):
     
-    # --- DADOS PARA OS GRÁFICOS ---
+    # GRÁFICOS
 
     # umidade do solo 
     solo_qs = sensorumidadeData.objects.order_by('-timestampSolo')[:20]
@@ -49,7 +50,6 @@ def telainicial(request):
         ar_hum_values.append(d.umidade or 0)
 
     
-    # --- DADOS PARA OS CARDS (LÓGICA CORRETA) ---
     latest_ar = DHT11Data.objects.order_by('-timestamp').first()
     latest_solo = sensorumidadeData.objects.order_by('-timestampSolo').first()
 
@@ -63,9 +63,11 @@ def telainicial(request):
         'ar_temp_values': json.dumps(ar_temp_values),
         'ar_hum_values': json.dumps(ar_hum_values),
 
-        # Dados dos cards
         'latest_solo': latest_solo, 
         'latest_ar': latest_ar,
     }
 
     return render(request, "dashboard_frontend/inicio.html", context)
+
+def gerenciar_umidade_solo(request):
+    return render(request, "dashboard_frontend/gerenciar_umidade_solo.html")
